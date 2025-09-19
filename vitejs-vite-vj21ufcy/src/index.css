@@ -1,0 +1,62 @@
+/* ====== Variabili ====== */
+:root{
+  --month-gap: 1px;  /* 🔁 distanza tra i mesi (cambia qui: 40/56/64...) */
+  --cell-h: 120px;    /* altezza celle giorno */
+  --cell-gap: 4px;    /* gap tra i quadrati giorno */
+}
+
+/* ====== Base layout ====== */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif; }
+.cal-root { max-width: 1100px; margin: 0 auto; padding-bottom: var(--month-gap); }
+
+/* ====== Header ====== */
+.cal-header { position: sticky; top: 0; background: #fff; border-bottom: 1px solid #e5e7eb; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; z-index: 5; }
+.cal-nav { display: flex; align-items: center; gap: 6px; }
+.title { font-weight: 700; text-transform: uppercase; }
+.btn { border: 1px solid #e5e7eb; background: #fff; padding: 5px 9px; border-radius: 8px; cursor: pointer; }
+.btn:hover { background: #f8fafc; }
+
+/* ====== Sezioni mese ====== */
+/* Lo spazio tra tutti i blocchi (prelude, mesi, postlude) è governato QUI. */
+.month-section { margin-top: var(--month-gap); }
+.month-section.dim { opacity: 0.5; }
+.month-label { font-weight: 800; color: #111827; padding: 4px 10px; }
+
+/* ====== Griglie ====== */
+.grid7 { display: grid; grid-template-columns: repeat(7, 1fr); }
+.head { color: #6b7280; font-weight: 700; padding: 4px 8px; }
+.head-cell { text-align: center; padding: 4px 0; }
+
+/* Niente cuscinetto extra sotto: lo spazio tra blocchi è solo --month-gap */
+.body { gap: var(--cell-gap); padding: 6px 10px 0 10px; }
+.short14 { grid-auto-rows: var(--cell-h); } /* preludio/postludio */
+
+/* ====== Celle giorno ====== */
+.cell { position: relative; height: var(--cell-h); border: 1px solid #e5e7eb; border-radius: 10px; padding: 6px; overflow: hidden; background: #fff; }
+.cell.readonly { pointer-events: auto; }
+.faded { opacity: 0.35; }
+.today { outline: 2px solid #10B981; }
+
+/* numero del giorno */
+.day-number { position: absolute; top: 4px; left: 8px; font-weight: 800; color: #111827; }
+
+/* badge (T I T I) in alto a destra */
+.badges { position: absolute; top: 4px; right: 6px; display: flex; gap: 4px; flex-wrap: wrap; width: 48px; justify-content: flex-end; }
+.badge { width: 20px; height: 20px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; color: #374151; font-size: 10px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.badge.on { background: #111827; color: #fff; }
+
+/* pill (etichette) */
+.items { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 4px; padding-right: 30px; }
+.pill { border: 1px solid currentColor; padding: 2px 6px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: grab; user-select: none; }
+.pill:active { cursor: grabbing; }
+
+/* grande X */
+.cross { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* bottone + */
+.add { position: absolute; right: 6px; bottom: 6px; width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; font-weight: 800; cursor: pointer; }
+.add:hover { background: #f3f4f6; }
+
+/* ====== Nascondi giorni fuori mese nei blocchi centrali ====== */
+.cell.placeholder { border: none; background: transparent; pointer-events: none; }
