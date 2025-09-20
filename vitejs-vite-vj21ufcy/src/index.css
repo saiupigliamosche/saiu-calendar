@@ -1,62 +1,143 @@
-/* ====== Variabili ====== */
-:root{
-  --month-gap: 1px;  /* 🔁 distanza tra i mesi (cambia qui: 40/56/64...) */
-  --cell-h: 120px;    /* altezza celle giorno */
-  --cell-gap: 4px;    /* gap tra i quadrati giorno */
-}
-
 /* ====== Base layout ====== */
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif; }
-.cal-root { max-width: 1100px; margin: 0 auto; padding-bottom: var(--month-gap); }
 
-/* ====== Header ====== */
+/* Shell con aside stretta e main larghissimo */
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(1200px, 1fr) 160px;
+  gap: 16px;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding-right: 8px;
+}
+
+/* Calendario principale sfrutta tutta la colonna */
+.cal-root { width: 100%; padding-bottom: 24px; }
+
+/* Header */
 .cal-header { position: sticky; top: 0; background: #fff; border-bottom: 1px solid #e5e7eb; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; z-index: 5; }
 .cal-nav { display: flex; align-items: center; gap: 6px; }
 .title { font-weight: 700; text-transform: uppercase; }
 .btn { border: 1px solid #e5e7eb; background: #fff; padding: 5px 9px; border-radius: 8px; cursor: pointer; }
 .btn:hover { background: #f8fafc; }
+.btn.primary { background: #111827; color: #fff; border-color: #111827; }
+.actions { display: flex; align-items: center; gap: 10px; }
+.save-status { color: #6b7280; font-size: 12px; }
 
-/* ====== Sezioni mese ====== */
-/* Lo spazio tra tutti i blocchi (prelude, mesi, postlude) è governato QUI. */
-.month-section { margin-top: var(--month-gap); }
+/* Sezioni mese */
+.month-section { margin-top: 4px; }
 .month-section.dim { opacity: 0.5; }
 .month-label { font-weight: 800; color: #111827; padding: 4px 10px; }
 
-/* ====== Griglie ====== */
+/* Griglie */
 .grid7 { display: grid; grid-template-columns: repeat(7, 1fr); }
 .head { color: #6b7280; font-weight: 700; padding: 4px 8px; }
 .head-cell { text-align: center; padding: 4px 0; }
+.body { gap: 4px; padding: 6px 10px 0 10px; }
+.short14 { grid-auto-rows: 120px; }
 
-/* Niente cuscinetto extra sotto: lo spazio tra blocchi è solo --month-gap */
-.body { gap: var(--cell-gap); padding: 6px 10px 0 10px; }
-.short14 { grid-auto-rows: var(--cell-h); } /* preludio/postludio */
-
-/* ====== Celle giorno ====== */
-.cell { position: relative; height: var(--cell-h); border: 1px solid #e5e7eb; border-radius: 10px; padding: 6px; overflow: hidden; background: #fff; }
+/* Celle giorno */
+.cell {
+  position: relative;
+  height: 120px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 6px;
+  background: #fff;
+  overflow: visible;   /* per mostrare i menu */
+}
 .cell.readonly { pointer-events: auto; }
 .faded { opacity: 0.35; }
 .today { outline: 2px solid #10B981; }
 
-/* numero del giorno */
+/* Numero giorno */
 .day-number { position: absolute; top: 4px; left: 8px; font-weight: 800; color: #111827; }
 
-/* badge (T I T I) in alto a destra */
+/* Badge */
 .badges { position: absolute; top: 4px; right: 6px; display: flex; gap: 4px; flex-wrap: wrap; width: 48px; justify-content: flex-end; }
 .badge { width: 20px; height: 20px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; color: #374151; font-size: 10px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
 .badge.on { background: #111827; color: #fff; }
 
-/* pill (etichette) */
+/* Palette cella */
+.cell-palette { position: absolute; left: 6px; bottom: 6px; width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; font-weight: 800; cursor: pointer; }
+
+/* Items / pill */
 .items { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 4px; padding-right: 30px; }
-.pill { border: 1px solid currentColor; padding: 2px 6px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: grab; user-select: none; }
+.pill { border: 1px solid currentColor; padding: 2px 6px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; user-select: none; }
 .pill:active { cursor: grabbing; }
 
-/* grande X */
+/* X */
 .cross { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 
-/* bottone + */
+/* + */
 .add { position: absolute; right: 6px; bottom: 6px; width: 24px; height: 24px; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; font-weight: 800; cursor: pointer; }
 .add:hover { background: #f3f4f6; }
 
-/* ====== Nascondi giorni fuori mese nei blocchi centrali ====== */
+/* Placeholder per celle fuori mese nei blocchi centrali */
 .cell.placeholder { border: none; background: transparent; pointer-events: none; }
+
+/* ===== Aside: Overview anno — colonna singola ===== */
+.aside { position: sticky; top: 0; height: 100vh; overflow: auto; border-left: 1px solid #e5e7eb; padding: 8px; background: #fff; }
+.aside-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.aside-title { font-weight: 800; }
+.year-mini { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.mini-month { border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px; }
+.mini-label { font-weight: 700; font-size: 12px; color: #374151; margin-bottom: 6px; text-transform: capitalize; }
+
+/* Griglia mini */
+.mini-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.mini-cell {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;           /* quadrato */
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #fff;
+  overflow: hidden;
+}
+.mini-faded { opacity: 0.35; }
+
+/* numero del giorno nell'overview */
+.mini-num {
+  position: absolute;
+  top: 2px; left: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* highlight “giorno modificato” nell’overview */
+.mini-has { background: #DCFCE7; border-color: #86EFAC; }
+
+/* X sull’overview */
+.mini-cross {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* ===== Menu a tendina ===== */
+.menu {
+  position: absolute;
+  right: 6px;
+  bottom: 36px;
+  min-width: 180px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  padding: 6px;
+  z-index: 50;
+}
+.menu-item { width: 100%; display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: #fff; border: none; cursor: pointer; border-radius: 8px; text-align: left; font-weight: 600; color: #111827; }
+.menu-item:hover { background: #F9FAFB; }
+.color-dot { width: 14px; height: 14px; border-radius: 999px; display: inline-block; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1200px) {
+  .app-shell { grid-template-columns: 1fr; max-width: 100%; }
+  .aside { display: none; }
+  .cal-root { width: 100%; }
+}
